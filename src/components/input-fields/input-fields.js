@@ -59,7 +59,10 @@ export default class InputFields extends Component {
             })
         }).then((response) => {
             console.log("Got Response", response.status);
-            alert("Register");
+            if(response.status===200){
+                alert("Register");
+            }
+
         })
     };
     login = () => {
@@ -72,10 +75,13 @@ export default class InputFields extends Component {
             })
         }).then((response) => {
             console.log(response.status);
+            if(response.status===200){
+                alert("Login");
+            }
             return response.json();
         }).then((body) => {
             this.userIdLogin = body.id;
-            alert("Login");
+
             this.setState({
                 login :true
             })
@@ -97,7 +103,9 @@ export default class InputFields extends Component {
                 "displayed_at": this.startTime
             })
         }).then((response) => {
-            alert("Sending Report");
+            if(response.status===200){
+                alert("Sending Report");
+            }
             console.log("Got Response", response.status);
             if (response && response.status === 200) {
                 this.startTime = new Date().getTime();
