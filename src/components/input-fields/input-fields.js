@@ -96,29 +96,32 @@ export default class InputFields extends Component {
         }
     };
     sendReport = () => {
-        this.setState({
-            userIdLogin: this.props.userIdLogin
-        });
-        this.timeBeforeReport = new Date().getTime();
-        this.duration = (((this.timeBeforeReport - this.startTime) / 1000).toFixed(2)).toString();
-        console.log(this.userIdLogin)
-        fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/collector/report`, {
-            method: 'post',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-            body: JSON.stringify({
-                "media_name": this.arr[this.random].name,
-                "duration": this.duration,
-                "displayed_at": this.startTime
+        if(this.state.login ===true) {
+            this.setState({
+                userIdLogin: this.props.userIdLogin
+            });
+            this.timeBeforeReport = new Date().getTime();
+            this.duration = (((this.timeBeforeReport - this.startTime) / 1000).toFixed(2)).toString();
+            console.log(this.userIdLogin)
+            fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/collector/report`, {
+                method: 'post',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({
+                    "media_name": this.arr[this.random].name,
+                    "duration": this.duration,
+                    "displayed_at": this.startTime
+                })
+            }).then((response) => {
+                if (response.status === 200) {
+                    alert("Sending Report");
+                }
+                console.log("Got Response", response.status);
+                if (response && response.status === 200) {
+                    this.startTime = new Date().getTime();
+                }
             })
-        }).then((response) => {
-            if(response.status===200){
-                alert("Sending Report");
-            }
-            console.log("Got Response", response.status);
-            if (response && response.status === 200) {
-                this.startTime = new Date().getTime();
-            }
-        })
+        }
+        else alert("Please Login First")
     };
     getReports = () => {
         if(this.state.login ===true) {
