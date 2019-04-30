@@ -50,42 +50,50 @@ export default class InputFields extends Component {
 
 
     registerUser = () => {
-        fetch(this.URL_REGISTRATION, {
-            method: 'post',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-            body: JSON.stringify({
-                "email": this.state.email,
-                "password": this.state.password
-            })
-        }).then((response) => {
-            console.log("Got Response", response.status);
-            if(response.status===200){
-                alert("Register");
-            }
+        if(this.state.email==="" &&this.state.password===""){
+            alert("Please Enter email and password");
+        }else {
+            fetch(this.URL_REGISTRATION, {
+                method: 'post',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({
+                    "email": this.state.email,
+                    "password": this.state.password
+                })
+            }).then((response) => {
+                console.log("Got Response", response.status);
+                if (response.status === 200) {
+                    alert("Register");
+                }
 
-        })
+            })
+        }
     };
     login = () => {
-        fetch(this.URL_LOGIN, {
-            method: 'post',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-            body: JSON.stringify({
-                "email": this.state.email,
-                "password": this.state.password
-            })
-        }).then((response) => {
-            console.log(response.status);
-            if(response.status===200){
-                alert("Login");
-            }
-            return response.json();
-        }).then((body) => {
-            this.userIdLogin = body.id;
+        if(this.state.email==="" &&this.state.password===""){
+            alert("Please Enter email and password");
+        }else {
+            fetch(this.URL_LOGIN, {
+                method: 'post',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({
+                    "email": this.state.email,
+                    "password": this.state.password
+                })
+            }).then((response) => {
+                console.log(response.status);
+                if (response.status === 200) {
+                    alert("Login");
+                }
+                return response.json();
+            }).then((body) => {
+                this.userIdLogin = body.id;
 
-            this.setState({
-                login :true
-            })
-        });
+                this.setState({
+                    login: true
+                })
+            });
+        }
     };
     sendReport = () => {
         this.setState({
