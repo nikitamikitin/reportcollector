@@ -13,6 +13,7 @@ export default class InputFields extends Component {
     duration = "";
 
 
+
     arr = [{image: (<img alt="img" src={require("../../static/pictures/cat1.jpg")}/>), name: "ca1.jpg"},
         {image: (<img alt="img" src={require("../../static/pictures/cat2.jpg")}/>), name: "cat2.jpg"},
         {image: (<img alt="img" src={require("../../static/pictures/cat3.jpg")}/>), name: "cat3.jpg"},
@@ -26,7 +27,8 @@ export default class InputFields extends Component {
         fromDateCal: "",
         toDateCal: "",
         dataList: [],
-        timeList: []
+        timeList: [],
+        login: false
     };
 
     constructor(props) {
@@ -74,6 +76,9 @@ export default class InputFields extends Component {
         }).then((body) => {
             this.userIdLogin = body.id;
             alert("Login");
+            this.setState({
+                login :true
+            })
         });
     };
     sendReport = () => {
@@ -100,29 +105,37 @@ export default class InputFields extends Component {
         })
     };
     getReports = () => {
-        fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/getAllReports`, {
-            method: 'get',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-        }).then((response) => {
-            return response.json()
-        }).then((body) => {
-            this.setState({
-                dataList: body
+        if(this.state.login ===true) {
+            fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/getAllReports`, {
+                method: 'get',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+            }).then((response) => {
+                return response.json()
+            }).then((body) => {
+                console.log(this.userIdLogin);
+                this.setState({
+                    dataList: body
+                })
             })
-        })
+        }
+        else alert("Please Login First")
     };
 
     getReportsByTime = () => {
-        fetch(`https://reportscollector.herokuapp.com/${this.state.fromDateCal}/${this.state.toDateCal}/getAllReportsByTime`, {
-            method: 'get',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-        }).then((response) => {
-            return response.json()
-        }).then((body) => {
-            this.setState({
-                timeList: body
+        if(this.state.fromDateCal==="" || this.state.toDateCal===""){
+            alert("Please choose time")
+        }else {
+            fetch(`https://reportscollector.herokuapp.com/${this.state.fromDateCal}/${this.state.toDateCal}/getAllReportsByTime`, {
+                method: 'get',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+            }).then((response) => {
+                return response.json()
+            }).then((body) => {
+                this.setState({
+                    timeList: body
+                })
             })
-        })
+        }
     };
     fromDateCal = (e) => {
         this.setState({
