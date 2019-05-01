@@ -62,7 +62,9 @@ export default class InputFields extends Component {
                 })
             }).then((response) => {
                 console.log("Got Response", response.status);
-                if (response.status === 200) {
+                if(response.status===403){
+                    alert("User already exists");
+                }else if (response.status === 200) {
                     alert("Register");
                 }
 
@@ -82,7 +84,10 @@ export default class InputFields extends Component {
                 })
             }).then((response) => {
                 console.log(response.status);
-                if (response.status === 200) {
+                if(response.status===400) {
+                    alert("Wrong email or password");
+                }
+                else if (response.status === 200) {
                     alert("Login");
                 }
                 return response.json();
