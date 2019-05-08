@@ -13,7 +13,6 @@ export default class InputFields extends Component {
     duration = "";
 
 
-
     arr = [{image: (<img alt="img" src={require("../../static/pictures/cat1.jpg")}/>), name: "ca1.jpg"},
         {image: (<img alt="img" src={require("../../static/pictures/cat2.jpg")}/>), name: "cat2.jpg"},
         {image: (<img alt="img" src={require("../../static/pictures/cat3.jpg")}/>), name: "cat3.jpg"},
@@ -28,7 +27,9 @@ export default class InputFields extends Component {
         toDateCal: "",
         dataList: [],
         timeList: [],
-        login: false
+        body: [],
+        login: false,
+        index: 0
     };
 
     constructor(props) {
@@ -50,9 +51,9 @@ export default class InputFields extends Component {
 
 
     registerUser = () => {
-        if(this.state.email==="" &&this.state.password===""){
+        if (this.state.email === "" && this.state.password === "") {
             alert("Please Enter email and password");
-        }else {
+        } else {
             fetch(this.URL_REGISTRATION, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -62,9 +63,9 @@ export default class InputFields extends Component {
                 })
             }).then((response) => {
                 console.log("Got Response", response.status);
-                if(response.status===403){
+                if (response.status === 403) {
                     alert("User already exists");
-                }else if (response.status === 200) {
+                } else if (response.status === 200) {
                     alert("Register");
                 }
 
@@ -72,9 +73,9 @@ export default class InputFields extends Component {
         }
     };
     login = () => {
-        if(this.state.email==="" &&this.state.password===""){
+        if (this.state.email === "" && this.state.password === "") {
             alert("Please Enter email and password");
-        }else {
+        } else {
             fetch(this.URL_LOGIN, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -84,7 +85,7 @@ export default class InputFields extends Component {
                 })
             }).then((response) => {
                 console.log(response.status);
-                if(response.status===400) {
+                if (response.status === 400) {
                     alert("Wrong email or password");
                 }
                 else if (response.status === 200) {
@@ -101,7 +102,7 @@ export default class InputFields extends Component {
         }
     };
     sendReport = () => {
-        if(this.state.login ===true) {
+        if (this.state.login === true) {
             this.setState({
                 userIdLogin: this.props.userIdLogin
             });
@@ -129,7 +130,7 @@ export default class InputFields extends Component {
         else alert("Please Login First")
     };
     getReports = () => {
-        if(this.state.login ===true) {
+        if (this.state.login === true) {
             fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/getAllReports`, {
                 method: 'get',
                 headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -146,27 +147,50 @@ export default class InputFields extends Component {
     };
 
     getReportsByTime = () => {
-        if(this.state.fromDateCal==="" || this.state.toDateCal===""){
+        if (this.state.fromDateCal === "" || this.state.toDateCal === "") {
             alert("Please choose time")
-        }else {
-            fetch(`https://reportscollector.herokuapp.com/${this.state.fromDateCal}/${this.state.toDateCal}/getAllReportsByTime`, {
+        } else {
+            fetch(`https://reportscollector.herokuapp.com/${this.state.fromDateCal}/${this.state.toDateCal}/getAllReportsByTime/${this.state.index}`, {
                 method: 'get',
                 headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
             }).then((response) => {
                 return response.json()
             }).then((body) => {
                 this.setState({
-                    timeList: body
+                    timeList: body,
+                    index: this.state.index + 10
                 })
             })
         }
     };
+
+    onScroll = () => {
+        if (this.state.fromDateCal === "" || this.state.toDateCal === "") {
+            alert("Please choose time")
+        } else {
+            fetch(`https://reportscollector.herokuapp.com/${this.state.fromDateCal}/${this.state.toDateCal}/getAllReportsByTime/${this.state.index}`, {
+                method: 'get',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+            }).then((response) => {
+                return response.json()
+            }).then((body) => {
+                console.log(body);
+                this.setState({
+                    timeList: [...this.state.timeList, ...body],
+                    index: this.state.index + 10
+                })
+            })
+        }
+    };
+
     fromDateCal = (e) => {
+        console.log((new Date(e.target.value).getTime()).toString());
         this.setState({
             fromDateCal: (new Date(e.target.value).getTime()).toString()
         });
     };
     toDateCal = (e) => {
+        console.log((new Date(e.target.value).getTime()).toString());
         this.setState({
             toDateCal: (new Date(e.target.value).getTime()).toString()
         });
@@ -201,14 +225,18 @@ export default class InputFields extends Component {
                             <input onClick={this.getReportsByTime} className="" type="submit" name=""
                                    value="Get Reports By Time"/>
                         </div>
-                        <ul>
-                            {this.state.dataList.map(data => <li key={Math.random() * 10}>
-                                {data.media_name},{data.duration},{data.displayed_at}</li>)}
-                        </ul>
-                        <ul>
-                            {this.state.timeList.map(time => <li key={Math.random() * 10}>
-                                {time.media_name},{time.displayed_at}</li>)}
-                        </ul>
+                        <div onScroll={this.onScroll}
+                             style={{overflowY: 'scroll', marginBottom: '20px', width: '300px', height: '100px'}}>
+                            <ul>
+                                {this.state.dataList.map(data => <li key={Math.random() * 10}>
+                                    {data.media_name},{data.duration},{data.displayed_at}</li>)}
+                            </ul>
+
+                            <ul>
+                                {this.state.timeList.map(time => <li key={Math.random() * 10}>
+                                    {time.media_name},{time.duration}</li>)}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
