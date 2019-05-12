@@ -181,16 +181,15 @@ export default class InputFields extends Component {
                 })
             })
         }
+        console.log(this.state.timeList);
     };
 
     fromDateCal = (e) => {
-        console.log((new Date(e.target.value).getTime()).toString());
         this.setState({
             fromDateCal: (new Date(e.target.value).getTime()).toString()
         });
     };
     toDateCal = (e) => {
-        console.log((new Date(e.target.value).getTime()).toString());
         this.setState({
             toDateCal: (new Date(e.target.value).getTime()).toString()
         });
@@ -219,24 +218,35 @@ export default class InputFields extends Component {
                         <span>To</span>
                         <input onChange={this.toDateCal} type="datetime-local"/>
 
-                        <div>
+                        <div className="d-flex flex-row">
                             <input onClick={this.getReports} className="" type="submit" name=""
-                                   value="Get Reports By Id"/>
+                                   value="Get reports by id"/>
                             <input onClick={this.getReportsByTime} className="" type="submit" name=""
-                                   value="Get Reports By Time"/>
+                                   value="Get first 10 reports by time"/>
+                            <input onClick={this.onScroll} className="" type="submit" name=""
+                                   value="Get next 10  reports by time"/>
                         </div>
-                        <div onScroll={this.onScroll}
-                             style={{overflowY: 'scroll', marginBottom: '20px', width: '300px', height: '100px'}}>
+
+
+                        <div className="d-flex flex-row">
+
+                        <div style={{ marginRight:'30px',width: '300px', height: '100px',overflowY: 'scroll', marginBottom: '20px'}}>
                             <ul>
                                 {this.state.dataList.map(data => <li key={Math.random() * 10}>
                                     {data.media_name},{data.duration},{data.displayed_at}</li>)}
                             </ul>
+                        </div>
 
+                        <div
+                             style={{overflowY: 'scroll', marginBottom: '20px', width: '300px', height: '100px'}}>
                             <ul>
                                 {this.state.timeList.map(time => <li key={Math.random() * 10}>
                                     {time.media_name},{time.duration}</li>)}
                             </ul>
                         </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
