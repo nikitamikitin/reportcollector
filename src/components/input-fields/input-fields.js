@@ -164,7 +164,7 @@ export default class InputFields extends Component {
         }
     };
 
-    onScroll = () => {
+    getNextReports = () => {
         if (this.state.fromDateCal === "" || this.state.toDateCal === "") {
             alert("Please choose time")
         } else {
@@ -223,7 +223,7 @@ export default class InputFields extends Component {
                                    value="Get reports by id"/>
                             <input onClick={this.getReportsByTime} className="" type="submit" name=""
                                    value="Get first 10 reports by time"/>
-                            <input onClick={this.onScroll} className="" type="submit" name=""
+                            <input onClick={this.getNextReports} className="" type="submit" name=""
                                    value="Get next 10  reports by time"/>
                         </div>
 
