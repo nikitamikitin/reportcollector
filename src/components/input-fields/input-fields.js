@@ -228,7 +228,7 @@ export default class InputFields extends Component {
                         </div>
 
 
-                        <div className="d-flex flex-row">
+                        <div className="d-flex flex-row justify-content-center">
 
                         <div style={{ marginRight:'30px',width: '300px', height: '100px',overflowY: 'scroll', marginBottom: '20px'}}>
                             <ul>
