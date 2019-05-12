@@ -11,7 +11,7 @@ export default class InputFields extends Component {
     startTime = 0;
     timeBeforeReport = 0;
     duration = "";
-
+    disableButton=false;
 
     arr = [{image: (<img alt="img" src={require("../../static/pictures/cat1.jpg")}/>), name: "ca1.jpg"},
         {image: (<img alt="img" src={require("../../static/pictures/cat2.jpg")}/>), name: "cat2.jpg"},
@@ -29,7 +29,7 @@ export default class InputFields extends Component {
         timeList: [],
         body: [],
         login: false,
-        index: 0
+        index: 0,
     };
 
     constructor(props) {
@@ -108,7 +108,7 @@ export default class InputFields extends Component {
             });
             this.timeBeforeReport = new Date().getTime();
             this.duration = (((this.timeBeforeReport - this.startTime) / 1000).toFixed(2)).toString();
-            console.log(this.userIdLogin)
+            console.log(this.userIdLogin);
             fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/collector/report`, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -130,6 +130,7 @@ export default class InputFields extends Component {
         else alert("Please Login First")
     };
     getReports = () => {
+        if(this.disableButton)
         if (this.state.login === true) {
             fetch(`https://reportscollector.herokuapp.com/${this.userIdLogin}/getAllReports`, {
                 method: 'get',
@@ -149,13 +150,17 @@ export default class InputFields extends Component {
     getReportsByTime = () => {
         if (this.state.fromDateCal === "" || this.state.toDateCal === "") {
             alert("Please choose time")
-        } else {
+        } else if(this.disableButton){
+            alert("Press next button to get rest of reports");
+        }
+        else {
             fetch(`https://reportscollector.herokuapp.com/${this.state.fromDateCal}/${this.state.toDateCal}/getAllReportsByTime/${this.state.index}`, {
                 method: 'get',
                 headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
             }).then((response) => {
                 return response.json()
             }).then((body) => {
+                this.disableButton=true;
                 this.setState({
                     timeList: body,
                     index: this.state.index + 10
